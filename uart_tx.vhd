@@ -66,7 +66,7 @@ begin
 		
 			case current_state is
 				
-				when IDLE =>														-- FSM reset
+				when IDLE =>							-- FSM reset
 					
 					tx_finish_i 	<= '0';
 					tx_busy_i 	<= '0';
@@ -80,7 +80,7 @@ begin
 						current_state <= IDLE;
 					end if;
 					
-				when START =>													-- Start bit sending
+				when START =>							-- Start bit sending
 					
 					tx_data_out_i 	<= '0';
 					tx_busy_i 	<= '1';
@@ -93,7 +93,7 @@ begin
 						current_state 	<= START;
 					end if;
 				
-				when DATA =>														-- Data transmitting bit-by-bit
+				when DATA =>								-- Data transmitting bit-by-bit
 				
 					tx_data_out_i <= tx_data_in (bit_counter);
 					
@@ -112,7 +112,7 @@ begin
 						current_state 	<= DATA;
 					end if;
 				
-				when STOP =>														-- Data transmitting finished
+				when STOP =>								-- Data transmitting finished
 					
 					tx_data_out_i 	<= '1';
 					tx_finish_i 	<= '1';
