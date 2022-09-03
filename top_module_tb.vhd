@@ -1,12 +1,12 @@
--- Author / Engineer : omerorkn
--- Date 			 : 17.06.2022
+-- Author / Engineer 	: omerorkn
+-- Date 		: 17.06.2022
 
 -- Testbench of UART Transceiver
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -- 1 start bit
 -- No parity bit
 -- 1 stop bit
--- 8 data bits 				 	(PARAMETRIC)
+-- 8 data bits 				(PARAMETRIC)
 -- System Clock 	: 50 MHz	(PARAMETRIC)
 -- Baud Rate		: 9600 bps 	(PARAMETRIC)
 
@@ -24,8 +24,8 @@ architecture testbench of top_module_tb is
 	component top_module is
 	port (
 					-- Input Ports
-					clk 				: in std_logic;
-					rst_n 				: in std_logic;
+					clk 			: in std_logic;
+					rst_n 			: in std_logic;
 					tx_start_top 		: in std_logic;
 					tx_data_in_top 		: in std_logic_vector(7 downto 0) ;
 					rx_data_in_top		: in std_logic;
@@ -39,34 +39,34 @@ architecture testbench of top_module_tb is
 	);
 	end component;
 
-	constant CLK_FREQ 		: integer 	:= 50_000_000;
+	constant CLK_FREQ 	: integer 	:= 50_000_000;
 	constant CLK_PERIOD 	: time 		:= 1000 ms / CLK_FREQ;
 
-	signal clk 					: std_logic := '0';
-	signal rst_n 				: std_logic := '1';
-	signal tx_start_tb 			: std_logic := '0';
+	signal clk 			: std_logic := '0';
+	signal rst_n 			: std_logic := '1';
+	signal tx_start_tb 		: std_logic := '0';
 	signal tx_data_in_tb 		: std_logic_vector(7 downto 0) := ("11001010");
 	signal rx_data_in_tb		: std_logic;
-	signal tx_busy_tb 			: std_logic := '0';	
+	signal tx_busy_tb 		: std_logic := '0';	
 	signal tx_finish_tb 		: std_logic := '0';
 	signal tx_data_out_tb 		: std_logic := '1';
 	signal rx_data_out_tb 		: std_logic_vector(7 downto 0) := (others => '0');	
-	signal rx_finish_tb			: std_logic := '0';
+	signal rx_finish_tb		: std_logic := '0';
 	
 begin
 
 	uut : top_module
 	port map (
-						clk 				=> clk,
-	                    rst_n 				=> rst_n,
-	                    tx_start_top 		=> tx_start_tb,
-	                    tx_data_in_top 		=> tx_data_in_tb,
-	                    rx_data_in_top		=> tx_data_out_tb,
-						tx_busy_top 		=> tx_busy_tb,
-						tx_finish_top 		=> tx_finish_tb,
-						tx_data_out_top 	=> tx_data_out_tb,
-						rx_data_out_top 	=> rx_data_out_tb,
-						rx_finish_top		=> rx_finish_tb
+			clk 			=> clk,
+	                rst_n 			=> rst_n,
+	                tx_start_top 		=> tx_start_tb,
+	                tx_data_in_top 		=> tx_data_in_tb,
+	                rx_data_in_top		=> tx_data_out_tb,
+			tx_busy_top 		=> tx_busy_tb,
+			tx_finish_top 		=> tx_finish_tb,
+			tx_data_out_top 	=> tx_data_out_tb,
+			rx_data_out_top 	=> rx_data_out_tb,
+			rx_finish_top		=> rx_finish_tb
 	);
 	
 	clk_p : process
