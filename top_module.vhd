@@ -45,8 +45,8 @@ architecture rtl of top_module is
 	component uart_tx is
 	
 	generic (
-					CLK_FREQ 	: integer 	:= 50_000_000;  	-- 50 MHz System Clock
-					BAUD_RATE 	: integer 	:= 9600;		-- 9600 bps Baud Rate
+					CLK_FREQ 	: integer 	:= 50_000_000;  	-- System Clock
+					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate
 					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
@@ -67,8 +67,8 @@ architecture rtl of top_module is
 	
 	generic (
 					CLK_FREQ 	: integer 	:= 50_000_000;  	-- System Clock (Hz)
-					BAUD_RATE 	: integer 	:= 9600;			-- Baud Rate (bps)
-					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value (5 - 9)
+					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate (bps)
+					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
 					-- Input Ports
