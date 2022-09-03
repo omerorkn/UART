@@ -18,7 +18,7 @@ entity uart_tx is
 	
 	generic (
 					CLK_FREQ 	: integer 	:= 50_000_000;  	-- System Clock (Hz)
-					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate
+					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate (bps)
 					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
@@ -66,7 +66,7 @@ begin
 		
 			case current_state is
 				
-				when IDLE =>							-- FSM reset
+				when IDLE =>								-- FSM reset
 					
 					tx_finish_i 	<= '0';
 					tx_busy_i 	<= '0';
@@ -80,7 +80,7 @@ begin
 						current_state <= IDLE;
 					end if;
 					
-				when START =>							-- Start bit sending
+				when START =>								-- Start bit sending
 					
 					tx_data_out_i 	<= '0';
 					tx_busy_i 	<= '1';
