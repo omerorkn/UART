@@ -1,12 +1,12 @@
--- Author / Engineer : omerorkn
--- Date 			 : 14.06.2022
+-- Author / Engineer 	: omerorkn
+-- Date 		: 14.06.2022
 
 -- Top Module of UART Transceiver
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -- 1 start bit
 -- No parity bit
 -- 1 stop bit
--- 8 data bits 					(PARAMETRIC)
+-- 8 data bits 				(PARAMETRIC)
 -- System Clock 	: 50 MHz	(PARAMETRIC)
 -- Baud Rate		: 9600 bps 	(PARAMETRIC)
 
@@ -20,13 +20,13 @@ entity top_module is
 
 	generic (
 					CLK_FREQ 	: integer 	:= 50_000_000;  	-- System Clock (Hz)
-					BAUD_RATE 	: integer 	:= 9600;			-- Baud Rate (bps)
+					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate (bps)
 					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
 					-- Input Ports
-					clk 					: in std_logic;
-					rst_n 					: in std_logic;
+					clk 				: in std_logic;
+					rst_n 				: in std_logic;
 					tx_start_top 			: in std_logic;
 					tx_data_in_top 			: in std_logic_vector(7 downto 0) ;
 					rx_data_in_top			: in std_logic;
@@ -46,19 +46,19 @@ architecture rtl of top_module is
 	
 	generic (
 					CLK_FREQ 	: integer 	:= 50_000_000;  	-- 50 MHz System Clock
-					BAUD_RATE 	: integer 	:= 9600;			-- 9600 bps Baud Rate
+					BAUD_RATE 	: integer 	:= 9600;		-- 9600 bps Baud Rate
 					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
 					-- Input Ports
-					clk 				: in std_logic;
-					rst_n 				: in std_logic;
-					tx_start 			: in std_logic;
-					tx_data_in 			: in std_logic_vector(7 downto 0) ;
+					clk 			: in std_logic;
+					rst_n 			: in std_logic;
+					tx_start 		: in std_logic;
+					tx_data_in 		: in std_logic_vector(7 downto 0) ;
 					
 					-- Output Ports
-					tx_busy 			: out std_logic;
-					tx_finish 			: out std_logic;
+					tx_busy 		: out std_logic;
+					tx_finish 		: out std_logic;
 					tx_data_out 		: out std_logic
 	);
 	end component;
@@ -72,13 +72,13 @@ architecture rtl of top_module is
 	);
 	port (
 					-- Input Ports
-					clk 			: in std_logic;
-					rst_n 			: in std_logic;
-					rx_data_in		: in std_logic;
+					clk 		: in std_logic;
+					rst_n 		: in std_logic;
+					rx_data_in	: in std_logic;
 					
 					-- Output Ports
 					rx_data_out 	: out std_logic_vector(7 downto 0);
-					rx_finish		: out std_logic
+					rx_finish	: out std_logic
 	) ;
 end component;
 
@@ -97,7 +97,7 @@ begin
 							tx_data_in 	=> tx_data_in_top,
 							tx_busy 	=> tx_busy_top,
 							tx_finish 	=> tx_finish_top,
-							tx_data_out => tx_data_out_top
+							tx_data_out 	=> tx_data_out_top
 	);
 
 	uart_rx_inst : uart_rx
@@ -107,11 +107,11 @@ begin
 		DATA_WIDTH	=> DATA_WIDTH
 		)
 		port map(
-			clk 			=> clk,
-			rst_n 			=> rst_n,
-			rx_data_in 		=> rx_data_in_top,
+			clk 		=> clk,
+			rst_n 		=> rst_n,
+			rx_data_in 	=> rx_data_in_top,
 			rx_data_out 	=> rx_data_out_top,
-			rx_finish 		=> rx_finish_top
+			rx_finish 	=> rx_finish_top
 		);
 			
 end rtl;
