@@ -17,8 +17,8 @@ use IEEE.NUMERIC_STD.all;
 entity uart_tx is
 	
 	generic (
-					CLK_FREQ 	: integer 	:= 50_000_000;  	-- 50 MHz System Clock
-					BAUD_RATE 	: integer 	:= 9600;		-- 9600 bps Baud Rate
+					CLK_FREQ 	: integer 	:= 50_000_000;  	-- System Clock (Hz)
+					BAUD_RATE 	: integer 	:= 9600;		-- Baud Rate
 					DATA_WIDTH	: integer range 5 to 9 := 8		-- Parametric Data Width Value
 	);
 	port (
