@@ -24,7 +24,7 @@ entity uart_rx is
 					DATA_WIDTH	: integer range 5 to 9 := 8			-- Parametric Data Width Value
 	);
 	port (
-					-- Inpıut Ports
+					-- Input Ports
 					clk 		: in std_logic;
 					rst_n 		: in std_logic;
 					rx_data_in	: in std_logic;
