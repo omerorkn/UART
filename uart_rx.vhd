@@ -108,6 +108,7 @@ begin
 				
 			when STOP =>									-- Data received
 				
+				rx_data_out <= rx_data_out_i;
 				rx_finish_i <= '1';
 				if (clk_counter = CLK_PER_BIT - 1) then
 					clk_counter 	<= 0;
@@ -126,6 +127,5 @@ begin
 	
 	-- Output buffering
 	rx_finish 	<= rx_finish_i;
-	rx_data_out 	<= rx_data_out_i;
 	
 end rtl;
