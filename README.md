@@ -13,8 +13,8 @@ Module Features :
   - No parity bit
   - 1 stop bit
   - 8 data bits 					    (PARAMETRIC)
-  - System Clock 	: 50 MHz	  (PARAMETRIC)
-  - Baud Rate		  : 9600 bps 	(PARAMETRIC)
+  - System Clock 	: 100 MHz	  (PARAMETRIC)
+  - Baud Rate		  : 25 Mbps 	(PARAMETRIC)
   - Compatibility with different UART modules (TESTED)
 
 This module tested on these projects :
