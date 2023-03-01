@@ -50,7 +50,7 @@ architecture rtl of uart_top is
 		CLK_FREQ 	: integer := 100_000_000; 						-- system clock value
 		BAUD_RATE 	: integer := 25_000_000;  						-- baud rate value for sync
 		DATA_WIDTH 	: integer := 8;								-- data width value
-		CLK_PER_BIT : integer := CLK_FREQ / BAUD_RATE 						-- clock per bit value for clock counter
+		CLK_PER_BIT 	: integer := CLK_FREQ / BAUD_RATE 					-- clock per bit value for clock counter
 	);										
 	port (										
 		-- Input Ports			
@@ -70,7 +70,7 @@ architecture rtl of uart_top is
 		CLK_FREQ 	: integer := 100_000_000; 						-- system clock value
 		BAUD_RATE 	: integer := 25_000_000;  						-- baud rate value for sync
 		DATA_WIDTH 	: integer := 8;								-- data width value
-		CLK_PER_BIT : integer := CLK_FREQ / BAUD_RATE 						-- clock per bit value for clock counter
+		CLK_PER_BIT 	: integer := CLK_FREQ / BAUD_RATE 					-- clock per bit value for clock counter
 	);				
 	port (				
 		-- Input Ports				
@@ -92,7 +92,7 @@ architecture rtl of uart_top is
 			CLK_FREQ 	=> CLK_FREQ,
 			BAUD_RATE 	=> BAUD_RATE,
 			DATA_WIDTH 	=> DATA_WIDTH,
-			CLK_PER_BIT => CLK_PER_BIT
+			CLK_PER_BIT 	=> CLK_PER_BIT
 		)
 		port map (
 			clk 		=> clk,
@@ -100,7 +100,7 @@ architecture rtl of uart_top is
 			tx_start	=> tx_start,
 			tx_data_in 	=> tx_data_in,
 			tx_busy 	=> tx_busy,
-			tx_data_out => tx_data_out
+			tx_data_out	=> tx_data_out
 		);
 
 		uart_rx_inst : uart_rx									-- instantiation of RX sub-module
@@ -108,13 +108,13 @@ architecture rtl of uart_top is
 			CLK_FREQ 	=> CLK_FREQ,	
 			BAUD_RATE 	=> BAUD_RATE,
 			DATA_WIDTH 	=> DATA_WIDTH,
-			CLK_PER_BIT => CLK_PER_BIT
+			CLK_PER_BIT 	=> CLK_PER_BIT
 		)
 		port map (
 			clk 		=> clk,
 			rst_n 		=> rst_n,
 			rx_data_in 	=> rx_data_in,
-			rx_data_out => rx_data_out,
+			rx_data_out 	=> rx_data_out,
 			rx_busy 	=> rx_busy,
 			rx_error 	=> rx_error
 		);
