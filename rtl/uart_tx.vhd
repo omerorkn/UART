@@ -1,152 +1,136 @@
 ------------------------------------------------------------------------------------------------------------------------------------------
--- File Name: uart_rx.vhd
--- Title & Purpose: Receiver Sub-Module for UART Communication
+-- File Name: uart_tx.vhd
+-- Title & Purpose: Transmitter Sub-Module for UART Communication
 -- Author: omerorkn
--- Date of Creation: 21.06.2022
+-- Date of Creation: 20.06.2022
 -- Version: 01
 -- Description: 
--- This sub-module is receiver of UART module
+-- This sub-module is transmitter of UART module
 -- 1 start bit
--- Data width is 8-bits 
+-- Data width is 8-bits
 -- No parity bit & 1 stop bit
 -- Module works at 100 MHz system clock & 25 Mbps baud rate  
 --
 -- File history:
--- 00   	: 21.06.2022 : File created.
+-- 00   	: 20.06.2022 : File created.
 -- 01 		: 19.09.2022 : Comments added to code.
 ------------------------------------------------------------------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.NUMERIC_STD.all;
 
-entity uart_rx is 
+entity uart_tx is
 	generic (
-		CLK_FREQ 	: integer := 100_000_000; 										-- system clock value
-		BAUD_RATE 	: integer := 25_000_000;  										-- baud rate value for sync
-		DATA_WIDTH 	: integer := 8;												-- data width value
-		CLK_PER_BIT 	: integer := CLK_FREQ / BAUD_RATE 									-- clock per bit value for clock counter
+		CLK_FREQ 	: integer := 100_000_000; 					-- system clock value
+		BAUD_RATE 	: integer := 25_000_000;  					-- baud rate value for sync
+		DATA_WIDTH 	: integer := 8;							-- data width value
+		CLK_PER_BIT : integer := CLK_FREQ / BAUD_RATE 					-- clock per bit value for clock counter
 	);				
 	port (				
 		-- Input Ports				
-		clk 		: in std_logic;												-- clock input
-		rst_n 		: in std_logic;                                             						-- active low reset
-		rx_data_in 	: in std_logic;                                             						-- data input for receiving data from TX
-																								
-		-- Output Ports                                                         				
-		rx_data_out	: out std_logic_vector (DATA_WIDTH - 1 downto 0);          						-- data out port
-		rx_busy		: out std_logic;                                           						-- busy flag
-		rx_error 	: out std_logic                                             						-- error flag
+		clk 		: in std_logic;							-- clock input
+		rst_n		: in std_logic;							-- active low reset
+		tx_start 	: in std_logic;							-- start trigger for TX
+		tx_data_in 	: in std_logic_vector(DATA_WIDTH - 1 downto 0);			-- 8-bit data input
+						
+		-- Output Ports				
+		tx_busy		: out std_logic;						-- busy flag
+		tx_data_out	: out std_logic							-- data out port
 	);
-end uart_rx;
+end uart_tx;
 
-architecture rtl of uart_rx is
+architecture rtl of uart_tx is
 	
-	type states_rx_t is (IDLE, START, DATA, STOP);											-- all RX states
-	signal current_state 	: states_rx_t := IDLE;											-- current state signal definition
+	type states_tx_t is (IDLE, START, DATA, STOP);						-- all TX states
+	signal current_state 	: states_tx_t := IDLE;						-- current state signal definition
 	
-	signal rx_data_in_d1	: std_logic := '1';											-- delaying for input signal #1
-	signal rx_data_in_d2	: std_logic := '1';											-- delaying for input signal #2
-	signal rx_data_out_i 	: std_logic_vector (DATA_WIDTH - 1 downto 0) := (others => '0');					-- internal signal of "rx_data_out" port for output buffering
-	signal rx_busy_i	: std_logic := '0';											-- internal signal of "rx_busy" port for output buffering
-	signal rx_error_i 	: std_logic := '0';											-- internal signal of "rx_error" port for output buffering
-	signal clk_counter 	: integer range 0 to CLK_PER_BIT - 1 := 0;								-- integer counter for clock cycle count
-	signal bit_counter 	: integer range 0 to DATA_WIDTH - 1 := 0;                        					-- integer counter for received data bits
+	signal tx_data_out_i1 	: std_logic := '1';						-- internal signal of "tx_data_out" port for output buffering #1
+	signal tx_data_out_i2	: std_logic := '1';						-- internal signal of "tx_data_out" port for output buffering #2
+	signal tx_busy_i	: std_logic := '0';						-- internal signal of "tx_busy" port for output buffering
+	signal clk_counter	: integer range 0 to CLK_PER_BIT - 1 := 0;			-- integer counter for clock cycle count
+	signal bit_counter	: integer range 0 to DATA_WIDTH - 1 := 0;			-- integer counter for transmitted data bits
 	
 begin
-
-	rx_p : process (clk, rst_n)													-- RX main process block
+	
+	tx_p : process (clk)									-- TX main process block
 	begin
 	
-		rx_data_in_d1 <= rx_data_in;
-		rx_data_in_d2 <= rx_data_in_d1;
-		
-		if (rst_n = '0') then													
-			rx_data_out_i 	<= (others => '0');
-			rx_error_i 	<= '0';
-			rx_busy_i	<= '0';
-			clk_counter 	<= 0;
-			bit_counter 	<= 0;
+		if (rst_n = '0') then
+			tx_data_out_i2 	<= '1';
+			tx_busy_i	<= '0'; 
+		    	clk_counter	<= 0;
+		    	bit_counter	<= 0;
 			current_state 	<= IDLE;
 			
 		elsif (rising_edge(clk)) then
+		
 			case current_state is
 			
-				when IDLE =>												-- idle state for FSM reset
+				when IDLE =>							-- idle mode
 					
-					rx_error_i 	<= '0';
-					rx_busy_i	<= '0';
-					clk_counter 	<= 0;
-					bit_counter 	<= 0;
+					clk_counter <= 0;
+					bit_counter <= 0;
 					
-					if (rx_data_in_d2 = '0') then
+					if (tx_start = '1') then
+						tx_busy_i		<= '1';
 						current_state <= START;
 					else
-						current_state <= IDLE;
-					end if;		
+						current_state <= IDLE;	
+					end if;
 					
-				when START =>												-- start bit detection
+				when START =>							-- start bit sending
 					
-					rx_error_i <= '0';
+					tx_data_out_i2 	<= '0';
 					
-					if (clk_counter = CLK_PER_BIT / 2 - 1) then
-						if (rx_data_in_d2 = '0') then
-							clk_counter 	<= 0;
-							current_state 	<= DATA;
-						else	
-							current_state 	<= IDLE;
-						end if;
+					if (clk_counter = CLK_PER_BIT - 1) then
+						clk_counter 	<= 0;
+						current_state 	<= DATA;
 					else
 						clk_counter 	<= clk_counter + 1;
 						current_state 	<= START;
 					end if;
+
+				when DATA =>							-- transmitting all bits
 				
-				when DATA =>												-- receiving all bits
-					
-					rx_busy_i <= '1';
+					tx_data_out_i2 <= tx_data_in(bit_counter);
 					
 					if (clk_counter = CLK_PER_BIT - 1) then
-						rx_data_out_i(bit_counter) <= rx_data_in_d2;
 						if (bit_counter = DATA_WIDTH - 1) then
 							clk_counter 	<= 0;
+							bit_counter 	<= 0;
 							current_state 	<= STOP;
 						else
-							clk_counter 	<= 0;
 							bit_counter 	<= bit_counter + 1;
+							clk_counter 	<= 0;
 							current_state 	<= DATA;
 						end if;
 					else
-						clk_counter 		<= clk_counter + 1;
-						current_state 		<= DATA;
+						clk_counter 	<= clk_counter + 1;
+						current_state 	<= DATA;
 					end if;
-						
-				when STOP =>												-- stop bit detection
 				
-                    rx_data_out <= rx_data_out_i;
-					bit_counter <= 0;
+				when STOP =>							-- stop bit sending
+					
+					tx_data_out_i2 	<= '1';
 					
 					if (clk_counter = CLK_PER_BIT - 1) then
-						if (rx_data_in_d2 = '1') then
-							rx_error_i 	<= not rx_data_in_d2;
-							rx_busy_i	<= '0';
-							clk_counter 	<= 0;
-							current_state 	<= IDLE;
-						else
-							clk_counter 	<= clk_counter + 1;
-							current_state 	<= STOP;
-						end if;
+						clk_counter 	<= 0;
+						tx_busy_i 		<= '0';
+						current_state 	<= IDLE;
 					else
-						clk_counter 		<= clk_counter + 1;
-						current_state 		<= STOP;	
+						clk_counter 	<= clk_counter + 1;
+						current_state 	<= STOP;
 					end if;
-
-				when others =>												-- unknown state condition
 				
+				when others =>							-- unknown state condition
+					
 					current_state <= IDLE;
-			end case;		
+			end case;
 		end if;
 	end process;
 	
-	rx_busy 	<= rx_busy_i;													-- output buffering
-	rx_error 	<= rx_error_i;													-- output buffering
+	tx_data_out_i1 	<= tx_data_out_i2;							-- output buffering
+	tx_data_out	<= tx_data_out_i1;							-- output buffering
+	tx_busy 	<= tx_busy_i;								-- output buffering
 	
 end rtl;
