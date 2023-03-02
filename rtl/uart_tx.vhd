@@ -24,7 +24,7 @@ entity uart_tx is
 		CLK_FREQ 	: integer := 100_000_000; 					-- system clock value
 		BAUD_RATE 	: integer := 25_000_000;  					-- baud rate value for sync
 		DATA_WIDTH 	: integer := 8;							-- data width value
-		CLK_PER_BIT : integer := CLK_FREQ / BAUD_RATE 					-- clock per bit value for clock counter
+		CLK_PER_BIT 	: integer := CLK_FREQ / BAUD_RATE 				-- clock per bit value for clock counter
 	);				
 	port (				
 		-- Input Ports				
